@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Converter.cpp">
+    <ClCompile Include="Template.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
