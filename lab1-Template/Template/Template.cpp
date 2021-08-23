@@ -62,7 +62,7 @@ void main()
                 Palette[i] = RGBQUAD{ (BYTE)b, (BYTE)g, (BYTE)r, 0 };
                 i++;
             }
-            cout << i << endl;
+            //cout << i << endl;
         }
         //cout << i << endl;
     }
