@@ -128,69 +128,46 @@ int main()
 	short int simmin1[] = { -1,2,3,-4 };
 	short int simmin2[] = { -3,1,-4,7 };
 	__m64 simmout = _mm_mullo_pi16(*(__m64*)simmin1, *(__m64*)simmin2);
+	_asm { emms }
 
-	cout << "Multiplication (_mm_mullo_pi16):\n";
+	cout << "Multiplication:\n";
 	printShortArray(simmin1, 4);
 	printShortArray(simmin2, 4);
 	printShortArray(simmout.m64_i16, 4);
 	cout << endl;
 
-	_asm{
-		emms
-	}
 	float fmmin1[8] = { 6, 6, 6, 6, 6, 6, 6, 6 };
-	float fmmin2[8] = { 2, 1, 3, 4, 5, 6, 7, 8 };
-	__m256 fmmout = _mm256_div_ps(*(__m256*)fmmin1, *(__m256*)fmmin2);
+	float fmmin2[8] = { 2, 1, 6, 4, 5, 3, 7, 8 };
+	__m128 fmmout = _mm_cmpeq_ps(*(__m128*)fmmin1, *(__m128*)fmmin2);
+	_asm { emms }
 
-	cout << "Division (_mm256_div_ps):\n";
-	printFloatArray(fmmin1, 8);
-	printFloatArray(fmmin2, 8);
-	printFloatArray(fmmout.m256_f32, 8);
+	cout << "Comparasing (equal?):\n";
+	printFloatArray(fmmin1, 4);
+	printFloatArray(fmmin2, 4);
+	for (int i = 0; i < 4; i++) {
+		cout << ((fmmout.m128_i32[i] < 0) ? "==" : "!=") << "\t";
+	}
 	cout << endl << endl;
 
-	//Выполняет разделение 8 упакованных одноточных элементов в первом исходном векторе immin1 восемью элементами во втором исходном векторе immin2
-	//результат в ymm a0/b0 ..
+	__m256 fmmout2 = _mm256_div_ps(*(__m256*)fmmin1, *(__m256*)fmmin2);
 
-	//xmmintrin add
-	float xmmin1[4] = { 6, 6, 6, 6 };
-	float xmmin2[4] = { 2, 1, 3, 4 };
-	__m128 xmmin = _mm_add_ps(*(__m128*)xmmin1, *(__m128*)xmmin2);
-
-	for (int i = 0; i < 4; i++) {
-		cout << xmmin.m128_f32[i] << " ";
-	}
+	cout << "Division:\n";
+	printFloatArray(fmmin1, 8);
+	printFloatArray(fmmin2, 8);
+	printFloatArray(fmmout2.m256_f32, 8);
 	cout << endl;
-	//xmm1 = a0+b0..
-
-	//mmintrin add
-	int mmin1[2] = { 6, 6 };
-	int mmin2[2] = { 2, 1 };
-	__m64 mmin = _m_paddb(*(__m64*) fmmin1, *(__m64*)fmmin2);
-	for (int i = 0; i < 2; i++) {
-		cout << mmin.m64_i32[i] << " ";
-	}
-	cout << endl;
-	//mm1 = a0+b0..
 
 	//dvec 24 строки на ассемблере для выполнения функции
 	Is16vec8 dvec1(1, 2, 3, 4, 5, 6, 7, 8);
 	Is16vec8 dvec2(1, 2, 3, 4, 5, 6, 7, 8);
+
+	cout << "Multiplication (dvec):\n";
+	printShortArray((short*)&dvec1, 8);
+	printShortArray((short*)&dvec2, 8);
+
 	dvec1 *= dvec2;
-
-	for (int i = 0; i < 8; i++) {
-		cout << *(((short*)&dvec1) + i) << " ";
-	}
+	printShortArray((short*)&dvec1, 8);
 	cout << endl;
-
-	//double f[2] = { 16, 4 };
-	//_asm { //sse2
-	//	movups xmm1, f
-	//	sqrtpd xmm0, xmm1
-	//	movups f, xmm0
-	//}
-	//cout << "Square of " << f[0] << " is " << f[1] << endl;
-
-
 
 	return 0;
 }
